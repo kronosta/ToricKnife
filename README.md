@@ -7,3 +7,8 @@ such as toratopes, but also we can easily define custom formulas using loops, co
 
 And for collision detection, the idea is for some lower dimensions we just check a bunch of points and if the values there are negative in both shapes there's an intersection and
 therefore a collision, then just flip the velocity and backtrack until the shapes are no longer intersecting. Then we can transfer the momentum or whatever.
+
+# Compilation
+Currently this compiles on Visual Studio 2022 with MSVC 19. I'm going to try my absolute hardest to make this easily compatible with other
+compilers though, by using mostly C++ standard stuff (although if that doesn't work I might need to use the preprocessor and manually verify
+it compiles).

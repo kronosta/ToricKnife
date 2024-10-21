@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+.vs/
+ToricKnife/x64/
+x64/
