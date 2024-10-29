@@ -11,3 +11,9 @@ therefore a collision, then just flip the velocity and backtrack until the shape
 # Compilation
 Currently this compiles on WSL. I ran into all sorts of trouble trying to get the GLEW functions to link properly,
 this might just be a quirk of my system but it was annoying and I wouldn't wish it upon my worst enemy.
+
+# Licensing
+As much as I would like to make this a (mostly) free-for-all endeavor with MIT or BSD, I realize that this project (if finished) is going to involve a lot of effort and time. 
+So I've put it under CC-BY-NC-SA 4.0 (read the license for details, but in general you must credit me, indicate if changes were made, and provide a link to the license; distribute
+modifications under the same license; and commercial use is not allowed). The intention of this is that if someone wants to use this commercially (doubt this will happen but maybe)
+then I would be able to get paid for it.
