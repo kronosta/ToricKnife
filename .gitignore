@@ -34,3 +34,7 @@
 .vs/
 ToricKnife/x64/
 x64/
+.vscode/
+bin/
+bin/toric-knife
+

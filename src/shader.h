@@ -5,20 +5,23 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <memory>
 #ifdef TORICKNIFE_WINDOWS_MSVC
 #include <windows.h>
 #endif
 #define GLEW_STATIC
 #include <GL/glew.h>
+#include "gtc/type_ptr.hpp"
 
 namespace toricknife {
 
     class Shader;
 
     extern std::string MarchingCubesTemplate;
+    extern Shader ShaderDraw;
     
     extern void GetMarchingCubesTemplate();
-    extern Shader MarchingCubesFromFunctions(std::string funcsurface, std::string funcnormal, std::string funchelpers);
+    extern std::string MarchingCubesFromFunctions(std::string funcsurface, std::string funcnormal, std::string funchelpers);
 
     
     class Shader {
@@ -29,6 +32,11 @@ namespace toricknife {
         char Invalid = false;
         // is true if this is a compute shader
         char IsCompute;
+
+        char **SourceCode;
+        
+        // dummy constructor so declaring without initialization is okay
+        Shader();
         // constructor generates vertex and fragment shaders from the path
         // ------------------------------------------------------------------------
         Shader(const char* vertexPath, const char* fragmentPath);
@@ -43,6 +51,10 @@ namespace toricknife {
         void SetInt(const std::string& name, int value) const;
         // Sets a float uniform
         void SetFloat(const std::string& name, float value) const;
+        // Sets a mat4 uniform
+        void SetMat4(const std::string& name, glm::mat4 value) const;
+        // Sets a vec4 uniform
+        void SetVec4(const std::string& name, glm::vec4 value) const;
         // deletes the program associated with this object and sets the Invalid flag on this object
         void Delete();
         // dispatches the shader as a compute shader if it is one

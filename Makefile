@@ -8,7 +8,7 @@ INCLUDEDIR=./include
 
 LD=c++
 DASH=-
-LDFLAGS = -lGLEW -lglfw -lglut -lOpenGL -lGL -lc
+LDFLAGS = -lGLEW -lglut -lglfw -lGL -lX11 -lc
 
 
 OBJS= \

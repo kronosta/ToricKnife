@@ -6,10 +6,14 @@
 #include <windows.h>
 #endif
 #include "shader.h"
+#include "glm.hpp"
 
 namespace toricknife {
 
+    class Shader;
+
     std::string MarchingCubesTemplate;
+    Shader ShaderDraw;
 
     void GetMarchingCubesTemplate() {
         std::ifstream file;
@@ -28,18 +32,18 @@ namespace toricknife {
         }
     }
 
-    Shader MarchingCubesFromFunctions(std::string funcsurface, std::string funcnormal, std::string funchelpers) {
+    std::string MarchingCubesFromFunctions(std::string funcsurface, std::string funcnormal, std::string funchelpers) {
         std::string funcsurfaceInter = "@@FUNCSURFACE@@",
                     funcnormalsInter = "@@FUNCNORMALS@@",
                     funchelpersInter = "@@FUNCHELPERS@@";
         std::string newcode = MarchingCubesTemplate;
         newcode = newcode.replace(newcode.find(funcsurfaceInter), funcsurfaceInter.length(), funcsurface);
-        newcode = newcode.replace(newcode.find(funcnormalsInter), funcnormalsInter.length(), funcsurface);
-        newcode = newcode.replace(newcode.find(funchelpersInter), funchelpersInter.length(), funcsurface);
-        char* cstr = (char*)(newcode.c_str());
-        char** codes = &cstr;
-        return Shader(GL_COMPUTE_SHADER, 1, codes);
+        newcode = newcode.replace(newcode.find(funcnormalsInter), funcnormalsInter.length(), funcnormal);
+        newcode = newcode.replace(newcode.find(funchelpersInter), funchelpersInter.length(), funchelpers);
+        return newcode;
     }
+
+    Shader::Shader(){}
 
     // This code shamelessly ripped from: https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_s.h
     // constructor generates the shader on the fly
@@ -75,26 +79,42 @@ namespace toricknife {
         const char* fShaderCode = fragmentCode.c_str();
         // 2. compile shaders
         unsigned int vertex, fragment;
+        printf("Compilation of %s and %s\n", vertexPath, fragmentPath);
         // vertex shader
         vertex = glCreateShader(GL_VERTEX_SHADER);
+        printf("Shader %s created\n", vertexPath);
         glShaderSource(vertex, 1, &vShaderCode, NULL);
+        printf("Shader %s attached to source\n", vertexPath);
         glCompileShader(vertex);
+        printf("Shader %s compiled\n", vertexPath);
         CheckCompileErrors(vertex, "VERTEX");
+        printf("Compiler errors checked on shader %s\n", vertexPath);
         // fragment Shader
         fragment = glCreateShader(GL_FRAGMENT_SHADER);
+        printf("Shader %s created\n", fragmentPath);
         glShaderSource(fragment, 1, &fShaderCode, NULL);
+        printf("Shader %s attached to source\n", fragmentPath);
         glCompileShader(fragment);
+        printf("Shader %s compiled\n", fragmentPath);
         CheckCompileErrors(fragment, "FRAGMENT");
+        printf("Compiler errors checked on shader %s\n", fragmentPath);
         // shader Program
         ID = glCreateProgram();
+        printf("Program created for shaders %s and %s", vertexPath, fragmentPath);
         glAttachShader(ID, vertex);
         glAttachShader(ID, fragment);
+        printf("Shaders %s and %s attached\n", vertexPath, fragmentPath);
         glLinkProgram(ID);
+        printf("Shader program linked\n");
         CheckCompileErrors(ID, "PROGRAM");
+        printf("Compiler errors checked\n");
         // delete the shaders as they're linked into our program now and no longer necessary
         glDeleteShader(vertex);
         glDeleteShader(fragment);
+        printf("Shaders %s and %s deleted from memory\n", vertexPath, fragmentPath);
         IsCompute = false;
+        char *sourceCode[] = {(char*)vShaderCode, (char*)fShaderCode};
+        SourceCode = &sourceCode[0];
     }
 
     Shader::Shader(GLenum type, GLsizei count, char** sourceFiles) {
@@ -103,6 +123,7 @@ namespace toricknife {
             IsCompute = true;
         else
             IsCompute = false;
+        SourceCode = sourceFiles;
     }
 
     // activate the shader
@@ -123,6 +144,15 @@ namespace toricknife {
     void Shader::SetFloat(const std::string& name, float value) const {
         glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
     }
+
+    void Shader::SetMat4(const std::string& name, glm::mat4 value) const {
+        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 16, false, glm::value_ptr(value));
+    }
+
+    void Shader::SetVec4(const std::string& name, glm::vec4 value) const {
+        glUniform4fv(glGetUniformLocation(ID, name.c_str()), 4, glm::value_ptr(value));
+    }
+    
 
     void Shader::Delete() {
         glDeleteProgram(ID);
