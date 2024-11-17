@@ -47,13 +47,12 @@ therefore a collision, then just flip the velocity and backtrack until the shape
         - Also for rotation and scale
 
 # Progress
-The project is in VERY early development. It doesn't render anything currently because the vertex and fragment shaders
-refuse to run for whatever reason, but I can confirm the marching cubes algorithm is running (though I don't have 
-evidence to say whether it's doing well)
+The project is in VERY early development.
 
 # Compilation
-Currently this compiles on WSL. I ran into all sorts of trouble trying to get the GLEW functions to link properly,
-this might just be a quirk of my system but it was annoying and I wouldn't wish it upon my worst enemy.
+I moved frameworks from raw OpenGL and Glew to .NET with OpenTK, because I'm already learning OpenGL
+as I go and C++ is making it a lot harder to do that since I don't know C++ and it's much harder than
+other languages I've learned. Essentially I'd rather flail in one thing than in two (until I get good of course).
 
 # Licensing
 As much as I would like to make this a (mostly) free-for-all endeavor with MIT or BSD, I realize that this project (if finished) is going to involve a lot of effort and time. 
